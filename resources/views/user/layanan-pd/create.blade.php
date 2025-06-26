@@ -23,8 +23,9 @@
                         <div class="mb-3">
                             <label for="id_satker" class="form-label">ID Satker</label>
                             <input type="text" class="form-control @error('id_satker') is-invalid @enderror"
-                                   id="id_satker" name="id_satker" value="{{ old('id_satker') }}" required>
-                            @error('id_satker')
+                                   id="id_satker" name="id_satker" 
+                                   value="{{ Auth::user()->nip }}" readonly required>
+                            @error('id_satker'))
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -40,7 +41,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                            @error('jenis_layanan')
+                            @error('jenis_layanan'))
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -49,7 +50,7 @@
                             <label for="keterangan" class="form-label">Keterangan <span class="text-danger">*</span></label>
                             <textarea class="form-control @error('keterangan') is-invalid @enderror"
                                       id="keterangan" name="keterangan" rows="3" required>{{ old('keterangan') }}</textarea>
-                            @error('keterangan')
+                            @error('keterangan'))
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -58,7 +59,7 @@
                             <label for="file_upload" class="form-label">Upload File</label>
                             <input class="form-control @error('file_upload') is-invalid @enderror"
                                    type="file" name="file_upload" id="file_upload" required>
-                            @error('file_upload')
+                            @error('file_upload'))
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                             <div class="form-text">Format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG</div>

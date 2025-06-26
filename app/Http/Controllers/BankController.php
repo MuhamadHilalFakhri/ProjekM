@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Bank;
+use Illuminate\Support\Facades\Auth;
 
 class BankController extends Controller
 {
@@ -18,7 +19,11 @@ class BankController extends Controller
             'KONFIRMASI SETORAN'
         ];
 
-        return view('user.layanan-bank.create', compact('jenis_layanan'));
+        // Kirim NIP user yang login ke view
+        return view('user.layanan-bank.create', [
+            'jenis_layanan' => $jenis_layanan,
+            'userNip' => Auth::user()->nip
+        ]);
     }
 
     public function store(Request $request)
@@ -30,13 +35,14 @@ class BankController extends Controller
             'file_upload' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,jpg,png|max:2048',
         ]);
 
-        $filePath = $request->file('file_upload')->store('uploads/bank', 'public');
+        $filePath = $request->file('file_upload')->store('uploads/layanan', 'public');
 
         Bank::create([
-            'id_satker' => $request->id_satker,
+            'id_satker' => Auth::user()->nip, // Gunakan NIP user yang login
             'jenis_layanan' => $request->jenis_layanan,
             'keterangan' => $request->keterangan,
             'file_path' => $filePath,
+            'user_id' => Auth::id() // Simpan ID user yang membuat pengajuan
         ]);
 
         return redirect()->back()->with('success', 'Layanan Bank berhasil dikirim.');

@@ -24,7 +24,8 @@
                         <div class="mb-3">
                             <label for="id_satker" class="form-label">ID Satker</label>
                             <input type="text" class="form-control @error('id_satker') is-invalid @enderror" 
-                                   id="id_satker" name="id_satker" value="{{ old('id_satker') }}" required>
+                                   id="id_satker" name="id_satker" 
+                                   value="{{ $userNip ?? Auth::user()->nip }}" readonly required>
                             @error('id_satker')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -65,7 +66,7 @@
                             @error('file_upload')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <div class="form-text">Format file yang didukung: PDF, DOC, DOCX, XLS, XLSX</div>
+                            <div class="form-text">Format file yang didukung: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG</div>
                         </div>
 
                         <div class="d-grid gap-2">

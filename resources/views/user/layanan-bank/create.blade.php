@@ -23,12 +23,14 @@
                         <div class="mb-3">
                             <label for="id_satker" class="form-label">ID Satker</label>
                             <input type="text" class="form-control @error('id_satker') is-invalid @enderror"
-                                   name="id_satker" id="id_satker" value="{{ old('id_satker') }}" required>
+                                   name="id_satker" id="id_satker" 
+                                   value="{{ $userNip ?? Auth::user()->nip }}" readonly required>
                             @error('id_satker')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Bagian form lainnya tetap sama -->
                         <div class="mb-3">
                             <label for="jenis_layanan" class="form-label">Jenis Layanan</label>
                             <select name="jenis_layanan" id="jenis_layanan"

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\LayananPd;
+use Illuminate\Support\Facades\Auth;
 
 class PdController extends Controller
 {
@@ -17,7 +18,10 @@ class PdController extends Controller
             'Pembatalan Kontrak'
         ];
 
-        return view('user.layanan-pd.create', compact('jenis_layanan'));
+        // Kirim NIP user ke view
+        $userNip = Auth::user()->nip;
+        
+        return view('user.layanan-pd.create', compact('jenis_layanan', 'userNip'));
     }
 
     public function store(Request $request)
@@ -29,13 +33,14 @@ class PdController extends Controller
             'file_upload' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,jpg,png|max:2048',
         ]);
 
-        $filePath = $request->file('file_upload')->store('uploads/pd', 'public');
+        $filePath = $request->file('file_upload')->store('uploads/layanan', 'public');
 
         LayananPd::create([
-            'id_satker' => $request->id_satker,
+            'id_satker' => Auth::user()->nip, // Gunakan NIP user yang login
             'jenis_layanan' => $request->jenis_layanan,
             'keterangan' => $request->keterangan,
             'file_path' => $filePath,
+            'user_id' => Auth::id()
         ]);
 
         return redirect()->back()->with('success', 'Layanan PD berhasil dikirim.');

@@ -53,7 +53,7 @@ Route::middleware('auth')->group(function () {
 
     // Route dashboard user dengan middleware role:user
     Route::middleware('role:user')->group(function () {
-        Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
+        Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
 
         // ✅ Tambahkan route layanan Vera untuk user
         Route::get('/user/layanan-vera/create', [VeraController::class, 'create'])->name('vera.create');
