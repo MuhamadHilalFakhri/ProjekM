@@ -2,7 +2,59 @@
 
 @section('content')
 <div class="container">
+    <!-- User Profile Section - Compact Vertical Layout -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Profil Pengguna</h5>
+        </div>
+        <div class="card-body p-3">
+            <div class="user-profile-compact">
+                <div class="profile-item">
+                    <span class="profile-label">ID Satker:</span>
+                    <span class="profile-value">{{ Auth::user()->nip }}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Nama:</span>
+                    <span class="profile-value">{{ Auth::user()->name }}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Email:</span>
+                    <span class="profile-value">{{ Auth::user()->email }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <h2 class="mb-4">Dashboard Layanan</h2>
+
+     <!-- Filter -->
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <select class="form-control" id="filterStatus">
+                <option value="">Semua Berkas</option>
+                <option value="diterima">Diterima</option>
+                <option value="diproses">Diproses</option>
+                <option value="selesai">Selesai</option>
+                <option value="ditolak">Ditolak</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select class="form-control" id="filterBulan">
+                <option value="">Semua Bulan</option>
+                @for ($m = 1; $m <= 12; $m++)
+                    <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}">{{ DateTime::createFromFormat('!m', $m)->format('F') }}</option>
+                @endfor
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select class="form-control" id="filterTahun">
+                <option value="">Semua Tahun</option>
+                @foreach ($tahunList as $tahun)
+                    <option value="{{ $tahun }}">{{ $tahun }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -55,7 +107,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center">Tidak ada data layanan</td>
+                                        <td colspan="5" class="text-center">Tidak ada data layanan</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -65,7 +117,6 @@
 
                 <!-- Tab Vera -->
                 <div class="tab-pane fade" id="vera" role="tabpanel">
-                    <!-- Tetap sama seperti sebelumnya -->
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -104,7 +155,6 @@
 
                 <!-- Tab PD -->
                 <div class="tab-pane fade" id="pd" role="tabpanel">
-                    <!-- Tetap sama seperti sebelumnya -->
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -143,7 +193,6 @@
 
                 <!-- Tab MSKI -->
                 <div class="tab-pane fade" id="mski" role="tabpanel">
-                    <!-- Tetap sama seperti sebelumnya -->
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -182,7 +231,6 @@
 
                 <!-- Tab Bank -->
                 <div class="tab-pane fade" id="bank" role="tabpanel">
-                    <!-- Tetap sama seperti sebelumnya -->
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -222,4 +270,69 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('styles')
+<style>
+    .user-profile-compact {
+        line-height: 1.6;
+    }
+    .profile-item {
+        margin-bottom: 0.3rem;
+        display: flex;
+        align-items: center;
+    }
+    .profile-label {
+        font-weight: bold;
+        min-width: 80px;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+    .profile-value {
+        flex: 1;
+    }
+    .card-body.p-3 {
+        padding: 1rem !important;
+    }
+    .card-header {
+        font-weight: bold;
+        padding: 0.75rem 1rem;
+    }
+    .table th {
+        white-space: nowrap;
+    }
+</style>
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterStatus = document.getElementById('filterStatus');
+        const filterBulan = document.getElementById('filterBulan');
+        const filterTahun = document.getElementById('filterTahun');
+
+        function filterTable() {
+            const rows = document.querySelectorAll('#tableSemua tbody tr');
+            const status = filterStatus.value.toLowerCase();
+            const bulan = filterBulan.value;
+            const tahun = filterTahun.value;
+
+            rows.forEach(row => {
+                const tglText = row.cells[4].textContent.trim();
+                const [day, month, year] = tglText.split(/[/\s:]+/);
+                const rowStatus = row.cells[5]?.textContent.trim().toLowerCase();
+
+                const matchStatus = !status || rowStatus.includes(status);
+                const matchBulan = !bulan || bulan === month;
+                const matchTahun = !tahun || tahun === year;
+
+                row.style.display = matchStatus && matchBulan && matchTahun ? '' : 'none';
+            });
+        }
+
+        filterStatus.addEventListener('change', filterTable);
+        filterBulan.addEventListener('change', filterTable);
+        filterTahun.addEventListener('change', filterTable);
+    });
+</script>
 @endsection

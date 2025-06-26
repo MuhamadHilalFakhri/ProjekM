@@ -45,12 +45,24 @@ class UserController extends Controller
         // Urutkan berdasarkan created_at terbaru
         $allRequests = $allRequests->sortByDesc('created_at');
 
+        // Ambil daftar tahun unik dari semua request untuk filter tahun
+        $tahunList = $allRequests
+            ->pluck('created_at')
+            ->map(function ($date) {
+                return $date->format('Y');
+            })
+            ->unique()
+            ->sortDesc()
+            ->values()
+            ->all();
+
         return view('user.dashboard', compact(
             'veraRequests',
             'pdRequests',
             'mskiRequests',
             'bankRequests',
-            'allRequests'
+            'allRequests',
+            'tahunList'
         ));
     }
 }
