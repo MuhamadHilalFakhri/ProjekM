@@ -11,6 +11,7 @@ class CreatePdsTable extends Migration
         Schema::create('pds', function (Blueprint $table) {
             $table->id();
             $table->string('id_satker');
+            $table->string('no_berkas');
             $table->string('jenis_layanan');
             $table->text('keterangan');
             $table->string('file_path');

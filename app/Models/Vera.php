@@ -10,6 +10,7 @@ class Vera extends Model
     use HasFactory;
 
     protected $fillable = [
+        'no_berkas',
         'id_satker',
         'jenis_layanan',
         'keterangan',

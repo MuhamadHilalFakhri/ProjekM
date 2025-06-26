@@ -11,6 +11,7 @@ class CreateVerasTable extends Migration
         Schema::create('veras', function (Blueprint $table) {
             $table->id();
             $table->string('id_satker'); // ID satker bisa berupa NIP atau kode
+            $table->string('no_berkas'); // ← Tambahkan baris ini
             $table->string('jenis_layanan'); // Jenis layanan dari dropdown
             $table->text('keterangan')->nullable(); // Bisa kosong
             $table->string('file_path'); // Menyimpan path file upload

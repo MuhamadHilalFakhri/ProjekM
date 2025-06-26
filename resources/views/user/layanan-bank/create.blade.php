@@ -19,6 +19,11 @@
 
                     <form action="{{ route('bank.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        <div class="mb-3">
+                            <label class="form-label">No Berkas</label>
+                            <input type="text" class="form-control" value="{{ 'BANK-' . now()->format('Ymd') }}" readonly>
+                        </div>
+
 
                         <div class="mb-3">
                             <label for="id_satker" class="form-label">ID Satker</label>

@@ -21,36 +21,38 @@ class UserController extends Controller
 
         // Gabungkan semua data untuk tab "Semua"
         $allRequests = new Collection();
-        
+
         $veraRequests->each(function ($item) use ($allRequests) {
             $item->layanan_type = 'Vera';
             $allRequests->push($item);
         });
-        
+
         $pdRequests->each(function ($item) use ($allRequests) {
             $item->layanan_type = 'PD';
             $allRequests->push($item);
         });
-        
+
         $mskiRequests->each(function ($item) use ($allRequests) {
             $item->layanan_type = 'MSKI';
             $allRequests->push($item);
         });
-        
+
         $bankRequests->each(function ($item) use ($allRequests) {
             $item->layanan_type = 'Bank';
             $allRequests->push($item);
         });
 
         // Urutkan berdasarkan created_at terbaru
-        $allRequests = $allRequests->sortByDesc('created_at');
+        $allRequests = $allRequests->sortByDesc('created_at')->values();
 
-        // Ambil daftar tahun unik dari semua request untuk filter tahun
+        // Ambil daftar tahun unik dari semua request (dengan validasi)
         $tahunList = $allRequests
             ->pluck('created_at')
+            ->filter() // pastikan tidak null
             ->map(function ($date) {
-                return $date->format('Y');
+                return optional($date)->format('Y'); // gunakan optional agar aman
             })
+            ->filter() // hilangkan hasil null
             ->unique()
             ->sortDesc()
             ->values()

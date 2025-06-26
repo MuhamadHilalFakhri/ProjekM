@@ -21,6 +21,12 @@
                         @csrf
 
                         <div class="mb-3">
+                            <label class="form-label">No Berkas</label>
+                            <input type="text" class="form-control" value="{{ 'MSKI-' . now()->format('Ymd') }}" readonly>
+                        </div>
+
+
+                        <div class="mb-3">
                             <label for="id_satker" class="form-label">ID Satker</label>
                             <input type="text" class="form-control @error('id_satker') is-invalid @enderror"
                                    id="id_satker" name="id_satker" 

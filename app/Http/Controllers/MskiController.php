@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Mski;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class MskiController extends Controller
 {
@@ -22,10 +23,10 @@ class MskiController extends Controller
             'PENDAFTARAN INJENT'
         ];
 
-        // Kirim NIP user yang login ke view
         return view('user.layanan-mski.create', [
             'jenis_layanan' => $jenis_layanan,
-            'userNip' => Auth::user()->nip
+            'userNip' => Auth::user()->nip,
+            'noBerkasPreview' => 'MSKI-' . Carbon::now()->format('YmdHis')
         ]);
     }
 
@@ -40,12 +41,18 @@ class MskiController extends Controller
 
         $filePath = $request->file('file_upload')->store('uploads/layanan', 'public');
 
+        $today = Carbon::now()->format('Ymd');
+        $jumlahHariIni = Mski::whereDate('created_at', Carbon::today())->count() + 1;
+        $noBerkas = 'MSKI-' . $today . '-' . str_pad($jumlahHariIni, 3, '0', STR_PAD_LEFT);
+
+
         Mski::create([
-            'id_satker' => Auth::user()->nip, // Gunakan NIP user yang login
+            'no_berkas' => $noBerkas,
+            'id_satker' => Auth::user()->nip,
             'jenis_layanan' => $request->jenis_layanan,
             'keterangan' => $request->keterangan,
             'file_path' => $filePath,
-            'user_id' => Auth::id() // Simpan ID user yang membuat pengajuan
+            'user_id' => Auth::id()
         ]);
 
         return redirect()->back()->with('success', 'Layanan MSKI berhasil dikirim.');

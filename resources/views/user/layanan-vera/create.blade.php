@@ -20,6 +20,12 @@
                     <form action="{{ route('vera.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
+                        <!-- Nomor Berkas -->
+                        <div class="mb-3">
+                            <label for="no_berkas" class="form-label">Nomor Berkas</label>
+                            <input type="text" class="form-control" id="no_berkas" name="no_berkas" value="{{ 'VERA-' . now()->format('Ymd') }}" readonly disabled>
+                        </div>
+
                         <!-- ID Satker -->
                         <div class="mb-3">
                             <label for="id_satker" class="form-label">ID Satker</label>

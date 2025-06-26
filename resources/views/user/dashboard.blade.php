@@ -54,6 +54,9 @@
                 @endforeach
             </select>
         </div>
+        <div class="col-md-3">
+            <button class="btn btn-primary btn-block" id="btnFilter">Search</button>
+        </div>
     </div>
 
     <div class="row">
@@ -83,17 +86,18 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>ID Satker</th>
+                                    <th>No Berkas</th>
                                     <th>Jenis Layanan</th>
                                     <th>Keterangan</th>
                                     <th>File</th>
                                     <th>Tanggal</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($allRequests as $request)
                                     <tr>
-                                        <td>{{ $request->id_satker }}</td>
+                                        <td>{{ $request->no_berkas }}</td>
                                         <td>{{ $request->layanan_type . ' - ' . $request->jenis_layanan }}</td>
                                         <td>{{ $request->keterangan ?? '-' }}</td>
                                         <td>
@@ -104,10 +108,11 @@
                                             @endif
                                         </td>
                                         <td>{{ $request->created_at->format('d/m/Y H:i') }}</td>
+                                         <td>{{ $request->status ?? '-' }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center">Tidak ada data layanan</td>
+                                        <td colspan="6" class="text-center">Tidak ada data layanan</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -121,7 +126,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>ID Satker</th>
+                                    <th>No Berkas</th>
                                     <th>Jenis Layanan</th>
                                     <th>Keterangan</th>
                                     <th>File</th>
@@ -131,7 +136,7 @@
                             <tbody>
                                 @forelse($veraRequests as $request)
                                     <tr>
-                                        <td>{{ $request->id_satker }}</td>
+                                        <td>{{ $request->no_berkas }}</td>
                                         <td>{{ $request->jenis_layanan }}</td>
                                         <td>{{ $request->keterangan ?? '-' }}</td>
                                         <td>
@@ -159,7 +164,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>ID Satker</th>
+                                    <th>No Berkas</th>
                                     <th>Jenis Layanan</th>
                                     <th>Keterangan</th>
                                     <th>File</th>
@@ -169,7 +174,7 @@
                             <tbody>
                                 @forelse($pdRequests as $request)
                                     <tr>
-                                        <td>{{ $request->id_satker }}</td>
+                                        <td>{{ $request->no_berkas }}</td>
                                         <td>{{ $request->jenis_layanan }}</td>
                                         <td>{{ $request->keterangan ?? '-' }}</td>
                                         <td>
@@ -197,7 +202,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>ID Satker</th>
+                                    <th>No Berkas</th>
                                     <th>Jenis Layanan</th>
                                     <th>Keterangan</th>
                                     <th>File</th>
@@ -207,7 +212,7 @@
                             <tbody>
                                 @forelse($mskiRequests as $request)
                                     <tr>
-                                        <td>{{ $request->id_satker }}</td>
+                                        <td>{{ $request->no_berkas }}</td>
                                         <td>{{ $request->jenis_layanan }}</td>
                                         <td>{{ $request->keterangan ?? '-' }}</td>
                                         <td>
@@ -235,7 +240,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>ID Satker</th>
+                                    <th>No Berkas</th>`
                                     <th>Jenis Layanan</th>
                                     <th>Keterangan</th>
                                     <th>File</th>
@@ -245,7 +250,7 @@
                             <tbody>
                                 @forelse($bankRequests as $request)
                                     <tr>
-                                        <td>{{ $request->id_satker }}</td>
+                                        <td>{{ $request->no_berkas }}</td>
                                         <td>{{ $request->jenis_layanan }}</td>
                                         <td>{{ $request->keterangan ?? '-' }}</td>
                                         <td>
@@ -310,29 +315,47 @@
         const filterStatus = document.getElementById('filterStatus');
         const filterBulan = document.getElementById('filterBulan');
         const filterTahun = document.getElementById('filterTahun');
+        const btnFilter = document.getElementById('btnFilter');
 
-        function filterTable() {
-            const rows = document.querySelectorAll('#tableSemua tbody tr');
-            const status = filterStatus.value.toLowerCase();
-            const bulan = filterBulan.value;
-            const tahun = filterTahun.value;
+        btnFilter.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const status = filterStatus.value.trim().toLowerCase();
+            const bulan = filterBulan.value.trim();
+            const tahun = filterTahun.value.trim();
+
+            const rows = document.querySelectorAll('#semua tbody tr');
 
             rows.forEach(row => {
-                const tglText = row.cells[4].textContent.trim();
-                const [day, month, year] = tglText.split(/[/\s:]+/);
-                const rowStatus = row.cells[5]?.textContent.trim().toLowerCase();
+                const tglText = row.cells[4]?.textContent.trim(); // kolom Tanggal
+                const rowStatus = row.cells[5]?.textContent.trim().toLowerCase(); // kolom Status
 
-                const matchStatus = !status || rowStatus.includes(status);
-                const matchBulan = !bulan || bulan === month;
-                const matchTahun = !tahun || tahun === year;
+                let matchStatus = true;
+                let matchBulan = true;
+                let matchTahun = true;
 
-                row.style.display = matchStatus && matchBulan && matchTahun ? '' : 'none';
+                if (status) {
+                    matchStatus = rowStatus.includes(status);
+                }
+
+                if (tglText) {
+                    const parts = tglText.split(/[\/\s:]+/); // [dd, mm, yyyy, HH, ii]
+                    const tglMonth = parts[1]; // format bulan = 2 digit
+                    const tglYear = parts[2]; // format tahun = 4 digit
+
+                    if (bulan) {
+                        matchBulan = bulan === tglMonth;
+                    }
+
+                    if (tahun) {
+                        matchTahun = tahun === tglYear;
+                    }
+                }
+
+                const isMatch = matchStatus && matchBulan && matchTahun;
+                row.style.display = isMatch ? '' : 'none';
             });
-        }
-
-        filterStatus.addEventListener('change', filterTable);
-        filterBulan.addEventListener('change', filterTable);
-        filterTahun.addEventListener('change', filterTable);
+        });
     });
 </script>
 @endsection

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Vera;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class VeraController extends Controller
 {
@@ -37,14 +39,21 @@ class VeraController extends Controller
             'file_upload' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,jpg,png|max:2048',
         ]);
 
+        // Simpan file ke storage
         $filePath = $request->file('file_upload')->store('uploads/layanan', 'public');
 
+        // Generate no_berkas: contoh "VB-20250626-001"
+        $today = Carbon::now()->format('Ymd');
+        $jumlahHariIni = Vera::whereDate('created_at', Carbon::today())->count() + 1;
+        $noBerkas = 'VERA-' . $today . '-' . str_pad($jumlahHariIni, 3, '0', STR_PAD_LEFT);
+
         Vera::create([
-            'id_satker' => Auth::user()->nip, // Gunakan NIP user yang login
-            'jenis_layanan' => $request->jenis_layanan,
-            'keterangan' => $request->keterangan,
-            'file_path' => $filePath,
-            'user_id' => Auth::id() // Simpan ID user yang membuat pengajuan
+            'no_berkas'      => $noBerkas,
+            'id_satker'      => Auth::user()->nip,
+            'jenis_layanan'  => $request->jenis_layanan,
+            'keterangan'     => $request->keterangan,
+            'file_path'      => $filePath,
+            'user_id'        => Auth::id(),
         ]);
 
         return redirect()->back()->with('success', 'Layanan berhasil dikirim.');

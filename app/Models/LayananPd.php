@@ -11,6 +11,7 @@ class LayananPd extends Model
 
     protected $table = 'pds';
     protected $fillable = [
+        'no_berkas',
         'id_satker',
         'jenis_layanan',
         'keterangan',
