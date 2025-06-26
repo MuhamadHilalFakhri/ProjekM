@@ -12,7 +12,7 @@ class DashboardController extends Controller
     {
         $totalAdmins = User::where('role', 'admin')->count();
         $totalStaffs = User::where('role', 'staff')->count();
-
-        return view('admin.dashboard', compact('totalAdmins', 'totalStaffs'));
+        $totalUsers = User::where('role', 'user')->count();
+        return view('admin.dashboard', compact('totalAdmins', 'totalStaffs', 'totalUsers'));
     }
 }

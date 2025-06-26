@@ -9,19 +9,24 @@
         </div>
         <div class="card-body p-3">
             <div class="user-profile-compact">
-                <div class="profile-item">
-                    <span class="profile-label">ID Satker:</span>
-                    <span class="profile-value">{{ Auth::user()->nip }}</span>
-                </div>
-                <div class="profile-item">
-                    <span class="profile-label">Nama:</span>
-                    <span class="profile-value">{{ Auth::user()->name }}</span>
-                </div>
-                <div class="profile-item">
-                    <span class="profile-label">Email:</span>
-                    <span class="profile-value">{{ Auth::user()->email }}</span>
-                </div>
-            </div>
+    <div class="profile-item">
+        <span class="profile-label">ID Satker:</span>
+        <span class="profile-value">{{ Auth::user()->nip }}</span>
+    </div>
+    <div class="profile-item">
+        <span class="profile-label">Nama Petugas:</span>
+        <span class="profile-value">{{ Auth::user()->name }}</span>
+    </div>
+    <div class="profile-item">
+        <span class="profile-label">Satuan Kerja:</span>
+        <span class="profile-value">{{ Auth::user()->nama_satker ?? '-' }}</span>
+    </div>
+    <div class="profile-item">
+        <span class="profile-label">Email:</span>
+        <span class="profile-value">{{ Auth::user()->email }}</span>
+    </div>
+        </div>
+
         </div>
     </div>
     
@@ -131,6 +136,7 @@
                                     <th>Keterangan</th>
                                     <th>File</th>
                                     <th>Tanggal</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -147,10 +153,11 @@
                                             @endif
                                         </td>
                                         <td>{{ $request->created_at->format('d/m/Y H:i') }}</td>
+                                        <td>{{ $request->status ?? '-' }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center">Tidak ada data layanan Vera</td>
+                                        <td colspan="6" class="text-center">Tidak ada data layanan Vera</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -169,6 +176,7 @@
                                     <th>Keterangan</th>
                                     <th>File</th>
                                     <th>Tanggal</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -185,10 +193,11 @@
                                             @endif
                                         </td>
                                         <td>{{ $request->created_at->format('d/m/Y H:i') }}</td>
+                                        <td>{{ $request->status ?? '-' }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center">Tidak ada data layanan PD</td>
+                                        <td colspan="6" class="text-center">Tidak ada data layanan PD</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -207,6 +216,7 @@
                                     <th>Keterangan</th>
                                     <th>File</th>
                                     <th>Tanggal</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -223,10 +233,11 @@
                                             @endif
                                         </td>
                                         <td>{{ $request->created_at->format('d/m/Y H:i') }}</td>
+                                        <td>{{ $request->status ?? '-' }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center">Tidak ada data layanan MSKI</td>
+                                        <td colspan="6" class="text-center">Tidak ada data layanan MSKI</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -240,11 +251,12 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>No Berkas</th>`
+                                    <th>No Berkas</th>
                                     <th>Jenis Layanan</th>
                                     <th>Keterangan</th>
                                     <th>File</th>
                                     <th>Tanggal</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -261,10 +273,11 @@
                                             @endif
                                         </td>
                                         <td>{{ $request->created_at->format('d/m/Y H:i') }}</td>
+                                        <td>{{ $request->status ?? '-' }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center">Tidak ada data layanan Bank</td>
+                                        <td colspan="6" class="text-center">Tidak ada data layanan Bank</td>
                                     </tr>
                                 @endforelse
                             </tbody>

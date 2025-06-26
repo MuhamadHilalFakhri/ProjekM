@@ -9,15 +9,17 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminStaffController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\VeraController; 
-use App\Http\Controllers\MskiController; 
-use App\Http\Controllers\PdController; 
-use App\Http\Controllers\BankController; 
+use App\Http\Controllers\VeraController;
+use App\Http\Controllers\MskiController;
+use App\Http\Controllers\PdController;
+use App\Http\Controllers\BankController;
+
+// ==================== HALAMAN AWAL ====================
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Route untuk dashboard umum dengan middleware auth dan verified
+// ==================== DASHBOARD REDIRECT (OTOMATIS BY ROLE) ====================
 Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
     $role = auth()->user()->role;
 
@@ -29,33 +31,52 @@ Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
     };
 })->name('dashboard');
 
-// Group route yang memerlukan autentikasi
+// ==================== AUTENTIKASI ====================
+Route::get('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'authenticate'])->name('login.authenticate');
+Route::get('/register', [AuthController::class, 'registerView'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+// ==================== AUTH SCAFFOLDING (BREEZE / JETSTREAM) ====================
+require __DIR__ . '/auth.php';
+
+// ==================== ROUTE TERPROTEKSI (LOGIN) ====================
 Route::middleware('auth')->group(function () {
 
-    // Profile routes
+    // ---------- PROFILE ----------
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Route dashboard admin dengan middleware role:admin
+    // ==================== ADMIN ====================
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-        // CRUD akun admin
+
+        // CRUD Admin
         Route::resource('/admin/admins', AdminUserController::class)->names('admin.admins');
-        // CRUD staff
+
+        // CRUD Staff
         Route::resource('/admin/staffs', AdminStaffController::class)->names('admin.staffs');
+
+        // CRUD User (role: user)
+        Route::get('/admin/users', [AdminUserController::class, 'indexUser'])->name('admin.users.index');
+        Route::get('/admin/users/create', [AdminUserController::class, 'createUser'])->name('admin.users.create');
+        Route::post('/admin/users/store', [AdminUserController::class, 'storeUser'])->name('admin.users.store');
+        Route::get('/admin/users/{id}/edit', [AdminUserController::class, 'editUser'])->name('admin.users.edit');
+        Route::put('/admin/users/{id}', [AdminUserController::class, 'updateUser'])->name('admin.users.update');
+        Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroyUser'])->name('admin.users.destroy');
     });
 
-    // Route dashboard staff dengan middleware role:staff
+    // ==================== STAFF ====================
     Route::middleware('role:staff')->group(function () {
         Route::get('/staff/dashboard', [StaffController::class, 'index'])->name('staff.dashboard');
     });
 
-    // Route dashboard user dengan middleware role:user
+    // ==================== USER ====================
     Route::middleware('role:user')->group(function () {
         Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
 
-        // ✅ Tambahkan route layanan Vera untuk user
+        // Layanan
         Route::get('/user/layanan-vera/create', [VeraController::class, 'create'])->name('vera.create');
         Route::post('/user/layanan-vera', [VeraController::class, 'store'])->name('vera.store');
 
@@ -67,19 +88,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/user/layanan-bank/create', [BankController::class, 'create'])->name('bank.create');
         Route::post('/user/layanan-bank', [BankController::class, 'store'])->name('bank.store');
-
-
-
     });
 
-    // Logout
+    // ==================== LOGOUT ====================
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
-
-// Route untuk login dan register
-Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/login', [AuthController::class, 'authenticate'])->name('login.authenticate');
-Route::get('/register', [AuthController::class, 'registerView'])->name('register');
-Route::post('/register', [AuthController::class, 'register'])->name('register.post');
-
-require __DIR__ . '/auth.php';

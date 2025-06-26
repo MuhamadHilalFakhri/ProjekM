@@ -32,14 +32,10 @@ class UserSeeder extends Seeder
             'name' => 'User KPPN',
             'email' => 'userkppn@gmail.com',
             'password' => Hash::make('password'),
+            'nip' => '123456789',
             'role' => 'user',
         ]);
-        User::create([
-            'name' => 'Akbarrr',
-            'email' => 'akbar1107kurniawan@gmail.com',
-            'password' => Hash::make('password'),
-            'role' => 'user',
-        ]);
+    
     }
 }
 
