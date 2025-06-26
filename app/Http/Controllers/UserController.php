@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Vera;
 use App\Models\LayananPd;
 use App\Models\Mski;
@@ -13,11 +14,13 @@ class UserController extends Controller
 {
     public function dashboard()
     {
-        // Ambil semua data dari masing-masing model
-        $veraRequests = Vera::latest()->get();
-        $pdRequests = LayananPd::latest()->get();
-        $mskiRequests = Mski::latest()->get();
-        $bankRequests = Bank::latest()->get();
+        $nip = Auth::user()->nip;
+
+        // Ambil data dari masing-masing model hanya milik user yang sedang login
+        $veraRequests = Vera::where('id_satker', $nip)->latest()->get();
+        $pdRequests   = LayananPd::where('id_satker', $nip)->latest()->get();
+        $mskiRequests = Mski::where('id_satker', $nip)->latest()->get();
+        $bankRequests = Bank::where('id_satker', $nip)->latest()->get();
 
         // Gabungkan semua data untuk tab "Semua"
         $allRequests = new Collection();
@@ -45,14 +48,12 @@ class UserController extends Controller
         // Urutkan berdasarkan created_at terbaru
         $allRequests = $allRequests->sortByDesc('created_at')->values();
 
-        // Ambil daftar tahun unik dari semua request (dengan validasi)
+        // Ambil daftar tahun unik dari semua request
         $tahunList = $allRequests
             ->pluck('created_at')
-            ->filter() // pastikan tidak null
-            ->map(function ($date) {
-                return optional($date)->format('Y'); // gunakan optional agar aman
-            })
-            ->filter() // hilangkan hasil null
+            ->filter()
+            ->map(fn($date) => optional($date)->format('Y'))
+            ->filter()
             ->unique()
             ->sortDesc()
             ->values()

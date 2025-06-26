@@ -30,37 +30,41 @@
             <div class="mb-3">
                 <label class="form-label">Nama</label>
                 <input type="text" name="name" class="form-control" required value="{{ old('name', $user->name) }}">
-                @error('name') <small class="text-danger">{{ $message }}</small> @enderror
             </div>
 
             <div class="mb-3">
                 <label class="form-label">NIP</label>
-                <input type="text" name="nip" class="form-control" value="{{ old('nip', $user->nip) }}">
-                @error('nip') <small class="text-danger">{{ $message }}</small> @enderror
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}">
-                @error('email') <small class="text-danger">{{ $message }}</small> @enderror
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">No HP</label>
-                <input type="text" name="no_hp" class="form-control" value="{{ old('no_hp', $user->no_hp) }}">
-                @error('no_hp') <small class="text-danger">{{ $message }}</small> @enderror
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Jabatan</label>
-                <input type="text" name="jabatan" class="form-control" value="{{ old('jabatan', $user->jabatan) }}">
-                @error('jabatan') <small class="text-danger">{{ $message }}</small> @enderror
+                <input type="text" name="nip" class="form-control" required value="{{ old('nip', $user->nip) }}">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Nama Satuan Kerja</label>
                 <input type="text" name="nama_satker" class="form-control" value="{{ old('nama_satker', $user->nama_satker) }}">
-                @error('nama_satker') <small class="text-danger">{{ $message }}</small> @enderror
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">No HP</label>
+                <input type="text" name="no_hp" class="form-control" value="{{ old('no_hp', $user->no_hp) }}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Jabatan</label>
+                <input type="text" name="jabatan" class="form-control" value="{{ old('jabatan', $user->jabatan) }}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password Baru <small>(biarkan kosong jika tidak diubah)</small></label>
+                <input type="password" name="password" class="form-control" placeholder="Opsional">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Konfirmasi Password</label>
+                <input type="password" name="password_confirmation" class="form-control" placeholder="Ulangi jika mengubah password">
             </div>
 
             <div class="d-flex justify-content-between">

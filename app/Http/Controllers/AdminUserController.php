@@ -18,26 +18,27 @@ class AdminUserController extends Controller
 
     public function create()
     {
-        $admins = User::where('role', 'admin')->get();
-        $adminCount = $admins->count();
-        return view('admin.admins.create', compact('admins', 'adminCount'));
+        return view('admin.admins.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'nip' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'name'     => 'required',
+            'nip'      => 'required|unique:users,nip',
+            'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
         ]);
 
         User::create([
-            'name' => $request->name,
-            'nip' => $request->nip,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'admin',
+            'name'        => $request->name,
+            'nip'         => $request->nip,
+            'email'       => $request->email,
+            'no_hp'       => $request->no_hp ?: '-',
+            'jabatan'     => $request->jabatan ?: '-',
+            'nama_satker' => $request->nama_satker ?: '-',
+            'role'        => 'admin',
+            'password'    => Hash::make($request->password),
         ]);
 
         return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil ditambahkan.');
@@ -54,16 +55,27 @@ class AdminUserController extends Controller
         $admin = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'required',
-            'nip' => 'required',
-            'email' => 'required|email|unique:users,email,' . $admin->id,
+            'name'        => 'required',
+            'nip'         => 'required|unique:users,nip,' . $admin->id,
+            'email'       => 'required|email|unique:users,email,' . $admin->id,
+            'no_hp'       => 'nullable|string',
+            'jabatan'     => 'nullable|string',
+            'nama_satker' => 'nullable|string',
+            'password'    => 'nullable|min:6|confirmed',
         ]);
 
-        $admin->update([
-            'name' => $request->name,
-            'nip' => $request->nip,
-            'email' => $request->email,
-        ]);
+        $admin->name        = $request->name;
+        $admin->nip         = $request->nip;
+        $admin->email       = $request->email;
+        $admin->no_hp       = $request->no_hp ?: '-';
+        $admin->jabatan     = $request->jabatan ?: '-';
+        $admin->nama_satker = $request->nama_satker ?: '-';
+
+        if ($request->filled('password')) {
+            $admin->password = Hash::make($request->password);
+        }
+
+        $admin->save();
 
         return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil diperbarui.');
     }
@@ -91,21 +103,21 @@ class AdminUserController extends Controller
     public function storeUser(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'nip' => 'required|unique:users,nip',
-            'email' => 'nullable|email|unique:users,email',
+            'name'     => 'required',
+            'nip'      => 'required|unique:users,nip',
+            'email'    => 'nullable|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
         ]);
 
         User::create([
-            'name' => $request->name,
-            'nip' => $request->nip,
-            'email' => $request->email ?: '-',
-            'no_hp' => $request->no_hp ?: '-',
-            'jabatan' => $request->jabatan ?: '-',
+            'name'        => $request->name,
+            'nip'         => $request->nip,
+            'email'       => $request->email ?: '-',
+            'no_hp'       => $request->no_hp ?: '-',
+            'jabatan'     => $request->jabatan ?: '-',
             'nama_satker' => $request->nama_satker ?: '-',
-            'role' => 'user',
-            'password' => Hash::make($request->password),
+            'role'        => 'user',
+            'password'    => Hash::make($request->password),
         ]);
 
         return redirect()->route('admin.users.index')->with('success', 'User berhasil ditambahkan.');
@@ -122,20 +134,20 @@ class AdminUserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'required',
-            'nip' => 'required|unique:users,nip,' . $user->id,
-            'email' => 'nullable|email|unique:users,email,' . $user->id,
-            'no_hp' => 'nullable|string',
-            'jabatan' => 'nullable|string',
+            'name'        => 'required',
+            'nip'         => 'required|unique:users,nip,' . $user->id,
+            'email'       => 'nullable|email|unique:users,email,' . $user->id,
+            'no_hp'       => 'nullable|string',
+            'jabatan'     => 'nullable|string',
             'nama_satker' => 'nullable|string',
-            'password' => 'nullable|min:6|confirmed',
+            'password'    => 'nullable|min:6|confirmed',
         ]);
 
-        $user->name = $request->name;
-        $user->nip = $request->nip;
-        $user->email = $request->email ?: '-';
-        $user->no_hp = $request->no_hp ?: '-';
-        $user->jabatan = $request->jabatan ?: '-';
+        $user->name        = $request->name;
+        $user->nip         = $request->nip;
+        $user->email       = $request->email ?: '-';
+        $user->no_hp       = $request->no_hp ?: '-';
+        $user->jabatan     = $request->jabatan ?: '-';
         $user->nama_satker = $request->nama_satker ?: '-';
 
         if ($request->filled('password')) {

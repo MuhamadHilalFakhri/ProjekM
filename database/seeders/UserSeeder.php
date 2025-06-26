@@ -29,11 +29,14 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'User KPPN',
-            'email' => 'userkppn@gmail.com',
-            'password' => Hash::make('password'),
-            'nip' => '123456789',
-            'role' => 'user',
+            'name'       => 'User KPPN',
+            'email'      => 'userkppn@gmail.com',
+            'password'   => Hash::make('password'),
+            'nip'        => '123456789',
+            'no_hp'      => '081234567890',      
+            'jabatan'    => 'Staf Pelaksana',           
+            'nama_satker'=> 'KANTOR PELAYANAN PERBENDAHARAAN NEGARA YOGYAKARTA', 
+            'role'       => 'user',
         ]);
     
     }
